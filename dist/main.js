@@ -1,0 +1,1 @@
+(()=>{"use strict";const e=document.getElementById("content");(()=>{const t=document.createElement("div");t.setAttribute("id","header");const n=document.createElement("p");n.innerText="Todo List";const c=document.createElement("img");c.setAttribute("id","header-icon"),c.src="./images/checkmarkimage.svg",t.appendChild(c),t.appendChild(n),e.appendChild(t)})()})();
