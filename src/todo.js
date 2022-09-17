@@ -6,14 +6,17 @@ const todoItem = (title, description, dueDate, priority) => {
   return { getTitle, getDesc, getDate, getPriority };
 };
 
-const project = () => {
+const project = (title) => {
   const todolist = [];
   const getList = () => todolist;
 
   const addTask = (todo) => {
     todolist.push(todo);
   };
-  return { addTask, getList };
+
+  const getTitle = () => title;
+
+  return { addTask, getList, getTitle };
 };
 
 export { todoItem, project };
