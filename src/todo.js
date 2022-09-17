@@ -8,7 +8,7 @@ const todoItem = (title, description, dueDate, priority) => {
 
 const project = (title) => {
   const todolist = [];
-  const getList = () => todolist;
+  const getTasks = () => todolist;
 
   const addTask = (todo) => {
     todolist.push(todo);
@@ -16,7 +16,7 @@ const project = (title) => {
 
   const getTitle = () => title;
 
-  return { addTask, getList, getTitle };
+  return { addTask, getTasks, getTitle };
 };
 
 export { todoItem, project };

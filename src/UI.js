@@ -1,4 +1,4 @@
-import { project } from "./todo";
+import { project, todoItem } from "./todo";
 import { director } from "./director";
 
 const content = document.getElementById("content");
@@ -32,27 +32,10 @@ const init = () => {
   initProjects();
 };
 
-const createProject = (title, num) => {
-  const projectList = document.getElementById("project-list");
-  const projectElement = document.createElement("li");
-  projectElement.classList.add("project");
-  projectElement.setAttribute("data", num);
-  const projectIcon = document.createElement("img");
-  const projectName = document.createElement("p");
-  projectName.innerText = title;
-  projectIcon.src = "./images/inboxIcon.png"; //TODO: change to dynamic
-  projectElement.appendChild(projectIcon);
-  projectElement.appendChild(projectName);
-  projectList.appendChild(projectElement);
-  projectElement.addEventListener("click", (e) => {
-    UI.openProject(e.target.getAttribute("data"));
-  });
-  let newProject = project(title);
-  dir.addList(newProject);
-};
-
 const initProjects = () => {
   let newProject = project("Inbox");
+  let newTask = todoItem("brush", "", "", 1);
+  newProject.addTask(newTask);
   let anotherProject = project("Today");
   dir.addList(newProject);
   dir.addList(anotherProject);
@@ -67,7 +50,34 @@ const loadProjects = () => {
   }
 };
 
-const openProject = (num) => {};
+const createProject = (title, num) => {
+  const projectList = document.getElementById("project-list");
+  const projectElement = document.createElement("li");
+  projectElement.classList.add("project");
+  projectElement.setAttribute("data", num);
+  const projectIcon = document.createElement("img");
+  const projectName = document.createElement("p");
+  projectName.innerText = title;
+  projectIcon.src = "./images/inboxIcon.png"; //TODO: change to dynamic
+  projectElement.appendChild(projectIcon);
+  projectElement.appendChild(projectName);
+  projectList.appendChild(projectElement);
+  projectElement.addEventListener("click", (e) => {
+    openProject(e.target.getAttribute("data"));
+  });
+};
+
+const openProject = (num) => {
+  let curProject = dir.getProject(num);
+  let taskList = curProject.getTasks();
+  let taskArea = document.getElementById("work-list");
+  for (let i = 0; i < taskList.length; i++) {
+    let task = document.createElement("li");
+    task.classList.add("task");
+    task.innerText = taskList[i].getTitle();
+    taskArea.appendChild(task);
+  }
+};
 
 const displayProject = (proj) => {
   const list = proj.getList();
