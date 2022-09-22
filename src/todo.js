@@ -1,7 +1,7 @@
 const todoItem = (title, description, dueDate, priority) => {
   const getTitle = () => title;
   const getDesc = () => description;
-  const getDate = () => dueDate;
+  const getDate = () => dueDate.toDateString() + dueDate.toLocaleTimeString();
   const getPriority = () => priority;
   return { getTitle, getDesc, getDate, getPriority };
 };

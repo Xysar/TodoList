@@ -49,7 +49,6 @@ body {
 .project {
   display: flex;
   align-items: center;
-  border: solid red 1px;
   cursor: pointer;
 }
 .project > img {
@@ -66,4 +65,14 @@ body {
 
   padding: 10px 15px 10px 15px;
   margin: 5px;
+}
+
+.add-task {
+  background: #dedede;
+  padding: 10px 15px 10px 15px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.task-form {
 }

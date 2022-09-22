@@ -34,8 +34,6 @@ const init = () => {
 
 const initProjects = () => {
   let newProject = project("Inbox");
-  let newTask = todoItem("brush", "", "", 1);
-  newProject.addTask(newTask);
   let anotherProject = project("Today");
   dir.addList(newProject);
   dir.addList(anotherProject);
@@ -71,20 +69,120 @@ const openProject = (num) => {
   let curProject = dir.getProject(num);
   let taskList = curProject.getTasks();
   let taskArea = document.getElementById("work-list");
+  taskArea.innerHTML = "";
   for (let i = 0; i < taskList.length; i++) {
-    let task = document.createElement("li");
-    task.classList.add("task");
-    task.innerText = taskList[i].getTitle();
+    let task = createTaskElement(taskList[i]);
     taskArea.appendChild(task);
   }
+  let createButton = createTaskButton();
+  createButton.addEventListener("click", (e) => {
+    let addTaskForm = createTaskForm();
+    taskArea.appendChild(addTaskForm);
+  });
+  taskArea.appendChild(createButton);
 };
 
-const displayProject = (proj) => {
-  const list = proj.getList();
-  for (let i = 0; i < list.length; i++) {
-    let task = list[i];
-    console.log(task.getTitle());
-  }
+createTaskElement = (taskObject) => {
+  let task = document.createElement("li");
+  task.classList.add("task");
+  task.innerText = taskList[i].getTitle();
+  task.innerText += taskList[i].getDate();
 };
 
-export { createProject, init, displayProject };
+const createTaskForm = () => {
+  let form = document.createElement("form");
+  form.id = "task-form";
+
+  let tasklabel = document.createElement("label");
+  tasklabel.innerText = "Task:";
+  tasklabel.setAttribute("for", "task");
+
+  let taskinput = document.createElement("input");
+  taskinput.setAttribute("type", "text");
+  taskinput.setAttribute("name", "task");
+  taskinput.id = "task-input";
+  taskinput.required = true;
+
+  let desclabel = document.createElement("label");
+  desclabel.innerText = "Description:";
+  desclabel.setAttribute("for", "task-desc");
+
+  let descinput = document.createElement("input");
+  descinput.setAttribute("type", "text");
+  descinput.setAttribute("name", "task-desc");
+  descinput.id = "task-desc";
+
+  let datelabel = document.createElement("label");
+  datelabel.innerText = "Due Date:";
+  datelabel.setAttribute("for", "task-due-date");
+
+  let dateinput = document.createElement("input");
+  dateinput.setAttribute("type", "datetime-local");
+  dateinput.setAttribute("name", "task-due-date");
+  dateinput.id = "task-due-date";
+
+  let prioritylabel = document.createElement("label");
+  prioritylabel.innerText = "Priority:";
+  prioritylabel.setAttribute("for", "priority");
+
+  let priorityinput = document.createElement("select");
+  priorityinput.setAttribute("name", "priority");
+  priorityinput.id = "task-priority";
+
+  let option1 = document.createElement("option");
+  option1.setAttribute("value", "1");
+  option1.innerText = "1";
+  let option2 = document.createElement("option");
+  option2.setAttribute("value", "2");
+  option2.innerText = "2";
+  let option3 = document.createElement("option");
+  option3.setAttribute("value", "3");
+  option3.innerText = "3";
+
+  priorityinput.appendChild(option1);
+  priorityinput.appendChild(option2);
+  priorityinput.appendChild(option3);
+
+  let submitButton = document.createElement("button");
+  submitButton.id = "task-submit";
+  submitButton.innerText = "Submit";
+  submitButton.addEventListener("click", (e) => {
+    if (taskinput.value === "") {
+      return;
+    }
+    e.preventDefault();
+    let newTask = createTask(taskinput, descinput, dateinput, priorityinput);
+    dir.getCurrentProject().addTask(newTask);
+    openProject(dir.getCurrentProjectIndex());
+  });
+
+  form.appendChild(tasklabel);
+  form.appendChild(taskinput);
+  form.appendChild(desclabel);
+  form.appendChild(descinput);
+  form.appendChild(datelabel);
+  form.appendChild(dateinput);
+  form.appendChild(prioritylabel);
+  form.appendChild(priorityinput);
+  form.appendChild(submitButton);
+  return form;
+};
+
+const createTask = (taskinput, descinput, dateinput, priorityinput) => {
+  let task = todoItem(
+    taskinput.value,
+    descinput.value,
+    new Date(dateinput.value),
+    priorityinput.value
+  );
+  return task;
+};
+
+const createTaskButton = () => {
+  let button = document.createElement("div");
+  button.classList.add("add-task");
+  button.innerText = "+ Add New Task";
+  return button;
+};
+
+export { createProject, init };
