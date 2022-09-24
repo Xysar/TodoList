@@ -60,11 +60,32 @@ body {
   background-color: #dedede;
 }
 
+.check-button {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+}
+
 .task {
   background: white;
+  display: flex;
+  align-items: center;
 
-  padding: 10px 15px 10px 15px;
   margin: 5px;
+  cursor: pointer;
+  flex-wrap: wrap;
+}
+
+.task-header {
+  display: flex;
+
+  padding: 10px 15px 10px 10px;
+  justify-content: space-between;
+  flex: 1 0 90%;
+}
+
+.task-header > p {
+  margin: 0;
 }
 
 .add-task {
@@ -74,5 +95,14 @@ body {
   cursor: pointer;
 }
 
-.task-form {
+.description-area {
+  width: 100%;
+  margin: 10px 10px 10px 15px;
+}
+
+#task-form {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 10px;
+  gap: 10px;
 }
