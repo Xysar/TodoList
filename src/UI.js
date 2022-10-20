@@ -1,9 +1,10 @@
 import { project, todoItem, dateHelper } from "./todo";
 import { director } from "./director";
+import { Storage } from "./storage";
 
 const content = document.getElementById("content");
-const dir = director();
-
+let dir = director();
+const storage = Storage();
 const init = () => {
   const header = document.createElement("div"); //header element
   header.setAttribute("id", "header");
@@ -19,7 +20,18 @@ const init = () => {
   navigation.setAttribute("id", "navigation");
   let projectList = document.createElement("ul");
   projectList.setAttribute("id", "project-list");
+
+  let addProjectButton = createProjectButton();
+  let addProjectForm = createProjectForm();
+
+  addProjectButton.addEventListener("click", (e) => {
+    if (navigation.lastElementChild === addProjectForm) {
+      return;
+    } else navigation.appendChild(addProjectForm);
+  });
   navigation.appendChild(projectList);
+  navigation.appendChild(addProjectButton);
+
   const workArea = document.createElement("div");
   workArea.setAttribute("id", "work-area");
   let workList = document.createElement("ul");
@@ -33,29 +45,60 @@ const init = () => {
 };
 
 const initProjects = () => {
-  let newProject = project("Inbox");
-  let anotherProject = project("Today");
-  let task = todoItem(
-    "asd",
-    "asd",
-    dateHelper("September 14 2012", "14:00"),
-    1
-  );
-  newProject.addTask(task);
-  dir.addList(newProject);
-  dir.addList(anotherProject);
+  dir = storage.getDirector();
   loadProjects();
 };
 
 const loadProjects = () => {
+  const projectList = document.getElementById("project-list");
+  projectList.innerHTML = "";
+  storage.saveDirector(dir);
   let list = dir.getList();
   for (let i = 0; i < list.length; i++) {
     let e = list[i];
-    createProject(e.getTitle(), i);
+    createProjectElement(e.getTitle(), i);
   }
 };
 
-const createProject = (title, num) => {
+const createProjectButton = () => {
+  let button = document.createElement("div");
+  button.classList.add("add-project");
+  button.innerText = "+ Create Project";
+  return button;
+};
+
+const createProjectForm = () => {
+  let form = document.createElement("form");
+  form.id = "project-form";
+
+  let projectInput = document.createElement("input");
+  projectInput.setAttribute("type", "text");
+  projectInput.setAttribute("name", "project");
+  projectInput.id = "project-input";
+  projectInput.required = true;
+
+  let submitButton = document.createElement("button");
+  submitButton.id = "project-submit";
+  submitButton.innerText = "Submit";
+  submitButton.addEventListener("click", (e) => {
+    if (projectInput.value === "") {
+      return;
+    }
+    e.preventDefault();
+
+    let newProject = project(projectInput.value);
+    dir.addProject(newProject);
+    let navigation = document.getElementById("navigation");
+    navigation.removeChild(navigation.lastElementChild);
+    loadProjects();
+  });
+
+  form.appendChild(projectInput);
+  form.appendChild(submitButton);
+  return form;
+};
+
+const createProjectElement = (title, num) => {
   const projectList = document.getElementById("project-list");
   const projectElement = document.createElement("li");
   projectElement.classList.add("project");
@@ -66,14 +109,25 @@ const createProject = (title, num) => {
   projectIcon.src = "./images/inboxIcon.png"; //TODO: change to dynamic
   projectElement.appendChild(projectIcon);
   projectElement.appendChild(projectName);
-  projectList.appendChild(projectElement);
-  projectElement.addEventListener("click", (e) => {
-    openProject(e.target.getAttribute("data"));
+
+  const projectDelete = document.createElement("p");
+  projectDelete.innerText = "x";
+  projectDelete.classList.add("project-delete");
+  projectDelete.addEventListener("click", (e) => {
+    dir.removeProject(num);
+    loadProjects();
   });
+  projectElement.appendChild(projectDelete);
+  projectElement.addEventListener("click", (e) => {
+    openProject(projectElement.getAttribute("data"));
+  });
+  projectList.appendChild(projectElement);
 };
 
 const openProject = (num) => {
+  storage.saveDirector(dir);
   let curProject = dir.getProject(num);
+
   let taskList = curProject.getTasks();
   let taskArea = document.getElementById("work-list");
   taskArea.innerHTML = "";
@@ -91,7 +145,6 @@ const openProject = (num) => {
     }
     taskArea.appendChild(addTaskForm);
   });
-
   taskArea.appendChild(createButton);
 };
 
@@ -119,7 +172,7 @@ const createTaskElement = (taskObject, index) => {
   taskHeader.appendChild(taskHeaderDate);
 
   let descriptionArea = document.createElement("div");
-  descriptionArea.innerText = "test";
+  descriptionArea.innerText = taskObject.getDesc();
   descriptionArea.classList.add("description-area");
 
   const removeDesc = () => {
@@ -212,8 +265,6 @@ const createTaskForm = () => {
     }
     e.preventDefault();
 
-    console.log(dateinput.value);
-    console.log(timeinput.value);
     let newTask = createTask(
       taskinput,
       descinput,
@@ -261,4 +312,4 @@ const createTaskButton = () => {
   return button;
 };
 
-export { createProject, init };
+export { createProjectElement, init };

@@ -48,9 +48,16 @@ body {
 
 .project {
   display: flex;
+
   align-items: center;
   cursor: pointer;
 }
+.project-delete {
+  margin: 0 0 5px 0;
+  margin-left: auto;
+  font-size: 1.5em;
+}
+
 .project > img {
   width: auto;
   height: 30px;
@@ -91,6 +98,12 @@ body {
 .add-task {
   background: #dedede;
   padding: 10px 15px 10px 15px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.add-project {
+  padding: 10px 15px 10px 10px;
   margin: 5px;
   cursor: pointer;
 }

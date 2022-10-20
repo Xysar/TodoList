@@ -3,7 +3,13 @@ const todoItem = (title, description, dueDate, priority) => {
   const getDesc = () => description;
   const getDate = () => dueDate;
   const getPriority = () => priority;
-  return { getTitle, getDesc, getDate, getPriority };
+  function getInfo() {
+    return [title, description, dueDate, priority];
+  }
+  function toJSON() {
+    return getInfo();
+  }
+  return { toJSON, getTitle, getDesc, getDate, getPriority, getInfo };
 };
 
 const project = (title) => {
@@ -18,9 +24,13 @@ const project = (title) => {
     todolist.splice(index, 1);
   };
 
+  const toJSON = () => {
+    return [getTitle(), todolist];
+  };
+
   const getTitle = () => title;
 
-  return { addTask, getTasks, getTitle, removeTask };
+  return { toJSON, addTask, getTasks, getTitle, removeTask };
 };
 
 const dateHelper = (date, time) => {
@@ -31,11 +41,20 @@ const dateHelper = (date, time) => {
     let format = new Date(date);
     return format.toDateString();
   };
+
   const getTime = () => {
     if (time === "") {
       return "";
     }
     return conv24to12HourClock(time);
+  };
+
+  const getInfoInList = () => {
+    return [getDate(), getTime()];
+  };
+
+  const toJSON = () => {
+    return getInfoInList();
   };
 
   const conv24to12HourClock = (time) => {
@@ -50,7 +69,7 @@ const dateHelper = (date, time) => {
     return hours + ":" + minutes + " " + meridiemPeriod;
   };
 
-  return { getDate, getTime, conv24to12HourClock };
+  return { toJSON, getDate, getTime, conv24to12HourClock, getInfoInList };
 };
 
 export { todoItem, project, dateHelper };
